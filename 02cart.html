@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="reset.css"/>
+    <style type="text/css">
+        #cartTable{margin:30px auto; border-collapse: collapse;}
+        td,th{padding:5px 10px;}
+        .txtCnt{width:30px; margin:0px 5px;}
+        button{padding:5px;}
+        .total{font-size:18px; color:darkred; font-weight:800;}
+    </style>
+    <script src="vue2.6.10.js"></script>
+</head>
+<body>
+<div id="cart">
+    <table border="1" cellspacing="0" id="cartTable" >
+        <thead>
+        <tr>
+            <th>商品序号</th>
+            <th>商品编号</th>
+            <th>商品名称</th>
+            <th>商品数量</th>
+            <th>商品单价</th>
+            <th>移出</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(item,index) in list">
+            <td>{{index+1}}</td>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td><button style="margin: 0 6px;" @click="add(index)">+</button>{{item.count}}
+                <button style="margin: 0 8px;" @click="cut(index)">-</button></td>
+            <td>{{item.price}}</td>
+            <td><button @click="del(index)">删除</button></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr v-if="list.length"><!--购物车中有商品时显示-->
+            <td colspan="6">总价为：<span class="total">{{money}}</span>元</td>
+        </tr>
+        <tr v-else><!--购物车中无商品时显示-->
+            <td colspan="6">此购物车中无商品</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+    new Vue({
+        el:'#cart',
+        data(){
+            return{
+                list:[{
+                    id:'0001',
+                    name:'iphoneX',
+                    count:1,
+                    price:6188
+                },{
+                    id:'0002',
+                    name:'华为p30',
+                    count:2,
+                    price:5934
+                },{
+                    id:'0003',
+                    name:'小米RedmiBook',
+                    count:1,
+                    price:4299
+                },{
+                    id:'0004',
+                    name:'华为畅享9e',
+                    count:3,
+                    price:799
+                }],
+                current:0,
+                money:0
+            }
+        },
+        methods:{
+            del(index){
+                this.list.splice(index,1);
+                this.count();
+            },
+            add(index){
+                this.list[index].count++;
+                this.count();
+            },
+            cut(index){
+                if(this.list[index].count>1){
+                    this.list[index].count--;
+                }
+                this.count();
+            },
+            count(){
+                var tPrice=0;
+                this.list.forEach(function (item,index) {
+                    tPrice+=item.count*item.price;
+                })
+                this.money=parseFloat(tPrice);
+            }
+        },
+        created(){
+            this.count();
+        }
+    })
+</script>
+</body>
+</html>
